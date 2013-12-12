@@ -1,0 +1,120 @@
+package Mimic;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jsfml.audio.Music;
+import org.jsfml.audio.Sound;
+import org.jsfml.graphics.Font;
+import org.jsfml.graphics.Texture;
+
+/**
+ *
+ * @author
+ * Toni Harju
+ */
+public class Resource {
+	
+	private static HashMap< String, Font > mFontList = new HashMap();
+	private static HashMap< String, Sound > mSoundList = new HashMap();
+	private static HashMap< String, Music > mMusicList = new HashMap();
+	private static HashMap< String, GameMap > mMapList = new HashMap();
+	private static HashMap< String, Texture > mTextureList = new HashMap();
+	
+	public static Font getFont( String filename ) {
+		
+		if( !mFontList.containsKey( filename ) ) {
+			
+			Font temp = new Font();
+			
+			try {
+				
+				temp.loadFromFile( Paths.get( filename ) );
+				
+				mFontList.put( filename, temp );
+				
+			} catch ( IOException ex ) {
+				
+				Logger.getLogger( Resource.class.getName() ).log( Level.SEVERE, null, ex );
+				
+			}
+			
+		}
+		
+		return mFontList.get( filename );
+		
+	}
+	
+	public static Texture getTexture( String filename ) {
+		
+		if( !mTextureList.containsKey( filename ) ) {
+		
+			Texture temp = new Texture();
+			
+			try {
+			
+				temp.loadFromFile( Paths.get( filename ) );
+				System.out.println( "Loaded Texture: " + filename );
+				mTextureList.put( filename, temp );
+			
+			} catch ( IOException ex ) {
+			
+				Logger.getLogger( Resource.class.getName() ).log( Level.SEVERE, null, ex );
+			
+			}
+			
+		}
+		
+		return mTextureList.get( filename );
+		
+	}
+	
+	public static GameMap getGameMap( String filename ) {
+		
+		if( !mMapList.containsKey( filename ) ) {
+			
+			try {
+				
+				GameMap temp = new GameMap( filename );
+				System.out.println( "Loaded Map: " + filename );
+				mMapList.put( filename, temp );
+				
+			} catch ( IOException ex ) {
+				
+				Logger.getLogger( Resource.class.getName( )).log( Level.SEVERE, null, ex );
+				
+			}
+			
+		}
+		
+		return mMapList.get( filename );
+		
+	}
+	
+	public static Music getMusic( String filename ) {
+		
+		if( !mMusicList.containsKey( filename ) ) {
+			
+			Music temp = new Music();
+			
+			try {
+				
+				temp.openFromFile( Paths.get( filename ) );
+				System.out.println( "Opened Music: " + filename );
+				mMusicList.put( filename, temp );
+				
+			} catch ( IOException ex ) {
+				
+				Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+				
+			}
+			
+		}
+		
+		return mMusicList.get( filename );
+		
+	}
+	
+}
