@@ -1,4 +1,4 @@
 Toxic
 =====
 
-School Game Project
+Game Project for a Java programming course at Centria University, Finland
