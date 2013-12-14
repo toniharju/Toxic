@@ -40,13 +40,11 @@ public class Lighting {
 	
 	private static synchronized void create() {
 		
-		if( Manager.getActiveGameMap() == null || mWasCreated ) return;
+		if( mWasCreated ) return;
 		
 		try {
 			
-			GameMap active_gamemap = Manager.getActiveGameMap();
-			
-			mMainLayer.create( active_gamemap.getMapSize().x, active_gamemap.getMapSize().y );
+			mMainLayer.create( Base.getWindowSize().x, Base.getWindowSize().y );
 			
 		} catch ( TextureCreationException ex ) {
 			
@@ -56,8 +54,7 @@ public class Lighting {
 		
 		Color dark = new Color( 0, 0, 0, 170 );
 		
-		mDarkLayer.setSize( new Vector2f( Manager.getActiveGameMap().getMapSize() ) );
-		//mDarkLayer.setSize( new Vector2f( Base.getWindowSize() ) );
+		mDarkLayer.setSize( new Vector2f( Base.getWindowSize() ) );
 		mDarkLayer.setFillColor( new Color( 85, 85, 85 ) );
 		
 		mSprite.setTexture( mMainLayer.getTexture() );
@@ -79,8 +76,8 @@ public class Lighting {
 		
 		if( mMainLayer == null || !mLightingAllowed ) return;
 		
-		//mDarkLayer.setPosition( Vector2f.sub( Manager.getActiveScene().getView().getCenter(), Base.getWindowHalfSize() ) );
-		//mSprite.setPosition( Vector2f.sub( Manager.getActiveScene().getView().getCenter(), Base.getWindowHalfSize() ) );
+		mLight.setPosition( Vector2f.sub( new Vector2f( 100, 32 ), mSprite.getPosition() ) );
+		mSprite.setPosition( Vector2f.sub( Manager.getActiveScene().getView().getCenter(), Base.getWindowHalfSize() ) );
 		
 		mMainLayer.clear();
 		
@@ -112,8 +109,8 @@ class LightingThread implements Runnable {
 			
 			try {
 				Thread.sleep( 10 );
-			} catch (InterruptedException ex) {
-				Logger.getLogger(LightingThread.class.getName()).log(Level.SEVERE, null, ex);
+			} catch ( InterruptedException ex ) {
+				Logger.getLogger( LightingThread.class.getName() ).log( Level.SEVERE, null, ex );
 			}
 			
 		}
