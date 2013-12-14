@@ -19,6 +19,8 @@ import org.jsfml.system.Vector2f;
  */
 public class Lighting {
 	
+	private static boolean mLightingAllowed = false;
+	
 	private static boolean mWasCreated = false;
 	
 	private static Sprite mSprite = new Sprite();
@@ -33,7 +35,12 @@ public class Lighting {
 		
 	}
 	
-	public static void create() {
+	public static void setLightingAllowed( boolean toggle ) { mLightingAllowed = toggle; }
+	public static boolean getLightingAllowed() { return mLightingAllowed; }
+	
+	private static synchronized void create() {
+		
+		if( Manager.getActiveGameMap() == null || mWasCreated ) return;
 		
 		try {
 			
@@ -58,6 +65,23 @@ public class Lighting {
 		mLight.setTexture( Resource.getTexture( "res/images/light1.png" ) );
 		mLight.setPosition( new Vector2f( 100, 32 ) );
 		
+		mWasCreated = true;
+		
+	}
+	
+	public static synchronized void update() {
+		
+		if( !mWasCreated ) {
+			
+			create();
+			
+		}
+		
+		if( mMainLayer == null || !mLightingAllowed ) return;
+		
+		//mDarkLayer.setPosition( Vector2f.sub( Manager.getActiveScene().getView().getCenter(), Base.getWindowHalfSize() ) );
+		//mSprite.setPosition( Vector2f.sub( Manager.getActiveScene().getView().getCenter(), Base.getWindowHalfSize() ) );
+		
 		mMainLayer.clear();
 		
 		mMainLayer.draw( mDarkLayer );
@@ -67,35 +91,32 @@ public class Lighting {
 		
 	}
 	
-	public static void update() {
+	public static void render() {
 		
-		if( mMainLayer == null ) return;
+		if( !mWasCreated || mMainLayer == null || !mLightingAllowed ) return;
 		
-		/*if( !mWasCreated ) {
-			
-			mWasCreated = true;
-			
-			create();
-			
-		}*/
-		
-		//mDarkLayer.setPosition( Vector2f.sub( Manager.getActiveScene().getView().getCenter(), Base.getWindowHalfSize() ) );
-		//mSprite.setPosition( Vector2f.sub( Manager.getActiveScene().getView().getCenter(), Base.getWindowHalfSize() ) );
-		
-		/*mMainLayer.clear();
-		
-		mMainLayer.draw( mDarkLayer );
-		mMainLayer.draw( mLight );
-		
-		mMainLayer.display();*/
+		Base.draw( mSprite, new RenderStates( BlendMode.MULTIPLY ) );
 		
 	}
 	
-	public static void render() {
+}
+
+class LightingThread implements Runnable {
+	
+	@Override
+	public void run() {
 		
-		if( mMainLayer == null ) return;
+		while( Base.getWindow().isOpen() ) {
 		
-		Base.draw( mSprite, new RenderStates( BlendMode.MULTIPLY ) );
+			Lighting.update();
+			
+			try {
+				Thread.sleep( 10 );
+			} catch (InterruptedException ex) {
+				Logger.getLogger(LightingThread.class.getName()).log(Level.SEVERE, null, ex);
+			}
+			
+		}
 		
 	}
 	

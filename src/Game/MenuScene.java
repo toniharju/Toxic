@@ -3,6 +3,7 @@ package Game;
 import Mimic.Base;
 import Mimic.IMainEvents;
 import Mimic.Input;
+import Mimic.Lighting;
 import Mimic.Manager;
 import Mimic.Resource;
 import Mimic.Scene;
@@ -46,6 +47,8 @@ public class MenuScene extends Scene implements IMainEvents {
 		mMenuMusic.setVolume( 25 );
 		mMenuMusic.setLoop( true );
 		mMenuMusic.play();
+		
+		Lighting.setLightingAllowed( false );
 		
 	}
 	

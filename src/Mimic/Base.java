@@ -36,6 +36,8 @@ public abstract class Base {
 	
 	private static Sprite mCursor =  new Sprite();
 	
+	private Thread mLightingThread;
+	
 	public boolean mIsInitialized = false;
 	
 	private static Vector2f mWindowHalfSize = new Vector2f( 0, 0 );
@@ -56,6 +58,8 @@ public abstract class Base {
 			mSineTable[ i ] = ( float )Math.sin( Math.toRadians( i ) );
 			
 		}
+		
+		mLightingThread = new Thread( new LightingThread() );
 		
 	}
 	
@@ -82,6 +86,8 @@ public abstract class Base {
 	public static int getFps() { return mFps; }
 	
 	public void run() {
+		
+		mLightingThread.start();
 		
 		mFpsTimer.restart();
 		
@@ -117,6 +123,7 @@ public abstract class Base {
 			Manager.renderActiveScene();
 			if( Manager.getActiveGameMap() != null ) Manager.getActiveGameMap().debugRender();
 			Manager.renderEntities();
+			Lighting.render();
 			
 			onRender();
 			

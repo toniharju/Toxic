@@ -1,6 +1,7 @@
 package Game;
 
 import Mimic.Base;
+import Mimic.Lighting;
 import Mimic.Manager;
 import Mimic.Resource;
 import Mimic.Scene;
@@ -51,6 +52,8 @@ public class LoadScene extends Scene {
 		mFont = Resource.getFont( "res/fonts/arial.ttf" );
 		
 		mThread = new Thread( new ResourceLoader() );
+		
+		Lighting.setLightingAllowed( false );
 		
 	}
 

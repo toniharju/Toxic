@@ -51,7 +51,9 @@ class MainScene extends Scene implements IMainEvents {
 		mAmbient.setVolume( 20 );
 		mAmbient.play();
 		
-		Lighting.create();
+		Lighting.setLightingAllowed( true );
+		
+		//Lighting.create();
 		
 	}
 	
@@ -60,7 +62,7 @@ class MainScene extends Scene implements IMainEvents {
 		
 		getView().setCenter( mPlayer.getPosition() );
 		
-		Lighting.update();
+		//Lighting.update();
 		
 	}
 
@@ -74,7 +76,7 @@ class MainScene extends Scene implements IMainEvents {
 		Manager.getActiveGameMap().render();
 		Base.draw( mFpsText );
 		
-		Lighting.render();
+		//Lighting.render();
 		
 	}
 	
