@@ -1,13 +1,8 @@
 package Game;
 
-import Mimic.AStarPath;
-import Mimic.Base;
 import Mimic.Entity;
-import Mimic.GameMap;
 import Mimic.Manager;
-import java.util.List;
 import org.jsfml.graphics.IntRect;
-import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
 /**
@@ -17,28 +12,33 @@ import org.jsfml.system.Vector2i;
  */
 class NPC extends Entity {
 	
-	private boolean mFoundWaypoints = false;
-	private List< Vector2i > mWaypointList = null;
-	
 	private final int mLoSDistance = 640;
-	private boolean mHadLoS = false;
 	
-	private static Entity mPlayer = null;
+	protected static Entity mPlayer = null;
 	
-	NPC() {
+	NPC( String texturePath ) {
 		
-		super( "images/player.png" );
+		super( texturePath );
 		
 		setType( "NPC" );
 		
-		addCollidableType( "Player" );
-		addCollidableType( "PistolBullet" );
+		addCollidableType( "PLAYER" );
 		
 		setOrigin( 64, 64 );
-		setPosition( 852, 640 );
 		setBoundingBox( new IntRect( 32, 32, 64, 64 ) );
 		setMapCollisionAllowed( false );
 		//rotate( 45 );
+	}
+	
+	public boolean isDistanceToPlayerLessThan( float distance ) {
+		
+		float dx = mPlayer.getPosition().x - getPosition().x;
+		float dy = mPlayer.getPosition().y - getPosition().y;
+		
+		if( dx * dx + dy * dy < distance * distance ) return true;
+		
+		return false;
+		
 	}
 	
 	public boolean hasLineOfSight() {
@@ -122,7 +122,7 @@ class NPC extends Entity {
 			
 			for( Entity ent : Manager.getEntities() ) {
 				
-				if( ent.getType().equals( "Player" ) ) {
+				if( ent.getType().equals( "PLAYER" ) ) {
 					
 					mPlayer = ent;
 					break;
@@ -138,56 +138,7 @@ class NPC extends Entity {
 	@Override
 	public void onUpdate() {
 		
-		if( hasLineOfSight() ) {
-			
-			pointTo( mPlayer.getPosition() );
-			moveTo( mPlayer.getPosition(), 100 * Base.getDeltaTime() );
-			
-			mHadLoS = true;
-			mFoundWaypoints = false;
-			
-		} else {
-			
-			if( mHadLoS ) {
-				
-				if( !mFoundWaypoints ) {
 		
-					GameMap active_gamemap = Manager.getActiveGameMap();
-			
-					mWaypointList = AStarPath.generatePath( active_gamemap.getExpandedCollisionData(), 
-															new Vector2i( ( int )getPosition().x / active_gamemap.getGridSize().x, ( int ) getPosition().y / active_gamemap.getGridSize().y ), 
-															new Vector2i( ( int )mPlayer.getPosition().x / active_gamemap.getGridSize().x, ( int )mPlayer.getPosition().y / active_gamemap.getGridSize().y ) );
-		
-					mFoundWaypoints = true;
-		
-				}
-				
-				mHadLoS = false;
-				
-			}
-			
-		}
-		
-		if( mWaypointList != null && mWaypointList.size() > 0 ) {
-			
-			GameMap active_gamemap = Manager.getActiveGameMap();
-			
-			Vector2i waypointPosition = Vector2i.componentwiseMul( mWaypointList.get( 0 ), active_gamemap.getGridSize() );
-			
-			pointTo( new Vector2f( waypointPosition ), 200 * Base.getDeltaTime() );
-			moveTo( new Vector2f( waypointPosition ), 80 * Base.getDeltaTime() );
-			
-			if( waypointPosition.equals( new Vector2i( getPosition() ) ) ) {
-				
-				mWaypointList.remove( 0 );
-				
-			}
-			
-		} else {
-			
-			mWaypointList = null;
-			
-		}
 		
 	}
 

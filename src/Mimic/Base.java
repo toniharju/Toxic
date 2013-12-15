@@ -33,6 +33,7 @@ public abstract class Base {
 	private static Clock mFpsTimer = new Clock();
 	private static int mFrameCount = 0;
 	private static int mFps = 0;
+	private static boolean mIsPaused = false;
 	
 	private static Sprite mCursor =  new Sprite();
 	
@@ -84,6 +85,9 @@ public abstract class Base {
 	
 	public static float getDeltaTime() { return mDeltaTime.asSeconds(); }
 	public static int getFps() { return mFps; }
+	
+	public static boolean isPaused() { return mIsPaused; }
+	public static void setPause( boolean toggle ) { mIsPaused = toggle; }
 	
 	public void run() {
 		

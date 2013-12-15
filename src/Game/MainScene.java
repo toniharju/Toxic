@@ -45,15 +45,18 @@ class MainScene extends Scene implements IMainEvents {
 		mFpsText.setColor( Color.WHITE );
 		
 		mPlayer = Manager.create( new Player() );
-		Manager.create( new NPC() );
+		Entity temp = Manager.create( new Enemy() );
+		temp.setPosition( 850, 500 );
+		
+		Entity temp2 = Manager.create( new Drunkard() );
+		temp2.setPosition( 300, 600 );
 		
 		mAmbient = Resource.getMusic( "res/sounds/dark_ambient.ogg" );
 		mAmbient.setVolume( 20 );
 		mAmbient.play();
 		
 		Lighting.setLightingAllowed( true );
-		
-		//Lighting.create();
+		Lighting.addStaticLight( new Vector2f( 100, 100 ), Resource.getTexture( "res/images/light1.png" ) );
 		
 	}
 	
@@ -61,8 +64,6 @@ class MainScene extends Scene implements IMainEvents {
 	public void onUpdate() {
 		
 		getView().setCenter( mPlayer.getPosition() );
-		
-		//Lighting.update();
 		
 	}
 
@@ -75,8 +76,6 @@ class MainScene extends Scene implements IMainEvents {
 		
 		Manager.getActiveGameMap().render();
 		Base.draw( mFpsText );
-		
-		//Lighting.render();
 		
 	}
 	

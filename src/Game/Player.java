@@ -7,7 +7,6 @@ import Mimic.Input;
 import Mimic.Manager;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.system.Vector2f;
-import org.jsfml.system.Vector2i;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.Mouse;
 
@@ -22,9 +21,10 @@ class Player extends Entity implements ICollisionEvents {
 		
 		super( "images/player.png" );
 		
-		setType( "Player" );
+		setType( "PLAYER" );
 		
 		addCollidableType( "NPC" );
+		addCollidableType( "ENEMY" );
 		
 		setOrigin( 64, 64 );
 		setPosition( 352, 352 );
@@ -37,6 +37,8 @@ class Player extends Entity implements ICollisionEvents {
 	@Override
 	public void onUpdate() {
 
+		if( Base.isPaused() ) return;
+		
 		if( Keyboard.isKeyPressed( Keyboard.Key.A ) ) setVelocity( -200 * Base.getDeltaTime(), getVelocity().y );
 		if( Keyboard.isKeyPressed( Keyboard.Key.D ) ) setVelocity( 200 * Base.getDeltaTime(), getVelocity().y );
 		if( Keyboard.isKeyPressed( Keyboard.Key.W ) ) setVelocity( getVelocity().x, -200 * Base.getDeltaTime() );

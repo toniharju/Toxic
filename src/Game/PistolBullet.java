@@ -25,9 +25,10 @@ public class PistolBullet extends Entity implements ICollisionEvents {
 	
 		super( "images/pistol_bullet.png" );
 		
-		setType( "PistolBullet" );
+		setType( "BULLET" );
 		
-		addCollidableType( "NPC" );
+		//addCollidableType( "NPC" );
+		addCollidableType( "ENEMY" );
 		
 		setOrigin( new Vector2f( 0, 4 ) );
 		

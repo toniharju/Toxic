@@ -3,6 +3,7 @@ package Mimic;
 import java.util.HashMap;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.Sprite;
+import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2f;
 
 /**
@@ -26,7 +27,9 @@ public abstract class Entity extends Sprite implements IMainEvents, ICollisionEv
 	
 	public Entity( String textureFile ) {
 		
-		setTexture( Resource.getTexture( "res/" + textureFile ) );
+		Texture temp = Resource.getTexture( "res/" + textureFile );
+		
+		setTexture( temp );
 		
 		mBoundingBox = new IntRect( 0, 0, getTexture().getSize().x, getTexture().getSize().y );
 		
