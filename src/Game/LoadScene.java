@@ -20,12 +20,14 @@ class ResourceLoader implements Runnable {
 	public void run() {
 		
 		Resource.getTexture( "res/images/player.png" );
+		Resource.getTexture( "res/images/npc_1.png" );
 		Resource.getTexture( "res/images/light1.png" );
 		Resource.getTexture( "res/images/pistol_bullet.png" );
 		Resource.getTexture( "res/images/mainMenuClear.png" );
 		Resource.getTexture( "res/images/menu_buttons.png" );
 		Resource.getTexture( "res/maps/assets/map1.png" );
 		Resource.getTexture( "res/images/crosshair.png" );
+		Resource.getTexture( "res/images/dialogMenu.png" );
 		
 		Resource.getMusic( "res/sounds/dark_ambient.ogg" );
 		Resource.getMusic( "res/sounds/main_menu.ogg" );

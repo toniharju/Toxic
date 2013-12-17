@@ -89,7 +89,28 @@ public abstract class Entity extends Sprite implements IMainEvents, ICollisionEv
 		
 		Vector2f delta = new Vector2f( position.x - getPosition().x, position.y - getPosition().y );
 		
-		float angle = ( float ) Math.atan2( delta.y, delta.x );
+		float toAngle = ( float )Math.toDegrees( Math.atan2( delta.y, delta.x ) );
+		toAngle = ( 360 + toAngle ) % 360;
+		
+		float currentAngle = getRotation() + 90;
+		currentAngle = ( 360 + currentAngle ) % 360;
+		
+		float deltaAngle = toAngle - currentAngle;
+		if( deltaAngle < 0 ) deltaAngle = 360 + deltaAngle;
+		
+		System.out.println( toAngle + " : " + currentAngle );
+		
+		if( deltaAngle < 180 ) {
+			
+			rotate( -speed );
+			
+		} else {
+			
+			rotate( speed );
+			
+		}
+		
+		/*float angle = ( float )Math.toDegrees( Math.atan2( delta.y, delta.x ) );
 		
 		angle = angle - ( float ) Math.toRadians( getRotation() + 90 );
 		
@@ -102,7 +123,9 @@ public abstract class Entity extends Sprite implements IMainEvents, ICollisionEv
 		else if( angle < -Math.PI )
 			angle += 2 * Math.PI;
 
-		rotate( angle > 0 ? -speed : speed );
+		rotate( angle > 0 ? -speed : speed );*/
+		
+		
 		
 	}
 	

@@ -38,10 +38,10 @@ public class MenuScene extends Scene implements IMainEvents {
 		
 		Base.setCursor( Resource.getTexture( "res/images/crosshair.png" ) );
 		
-		mBackground.setTexture( Resource.getTexture( "res/images/mainMenuClear.png" ) );
+		mBackground.setTexture( Resource.getTexture( "res/images/mainMenu.png" ) );
 		
 		mButtons.setTexture( Resource.getTexture( "res/images/menu_buttons.png" ) );
-		mButtons.setPosition( 266, 200 );
+		mButtons.setPosition( 266, 600 );
 		
 		mMenuMusic = Resource.getMusic( "res/sounds/main_menu.ogg" );
 		mMenuMusic.setVolume( 25 );
@@ -61,7 +61,7 @@ public class MenuScene extends Scene implements IMainEvents {
 		
 		if( mousePos.x > 266 && mousePos.x < 758 ) {
 			
-			if( mousePos.y > 200 && mousePos.y < 232 ) {
+			if( mousePos.y > 600 && mousePos.y < 632 ) {
 				
 				mButtonNewGameHighlighted = true;
 				

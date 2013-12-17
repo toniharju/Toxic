@@ -2,7 +2,6 @@ package Game;
 
 import Mimic.Manager;
 import Mimic.Base;
-import Mimic.Lighting;
 import org.jsfml.system.Vector2i;
 
 
@@ -28,26 +27,19 @@ class GameBase extends Base {
 		
 		Manager.setActiveScene( "LoadScene" );
 		
-		//Scene.create( new LoadScene() );
-		//Scene.create( new MainScene() );
-		
-		//Scene.setActive( "LoadScene" );
-		
 	}
 	
 	@Override
 	public void onUpdate() {
 		
-		//System.out.println( Input.isKeyHit( Key.SPACE ) );
 		
-		//if( Manager.getActiveScene().getName().equals( "MainScene" ) ) Lighting.update();
 		
 	}
 
 	@Override
 	public void onRender() {
 		
-		//if( Manager.getActiveScene().getName().equals( "MainScene" ) ) Lighting.render();
+		
 		
 	}
 	

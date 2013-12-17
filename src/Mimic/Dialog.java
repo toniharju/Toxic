@@ -1,4 +1,4 @@
-package mimic;
+package Mimic;
 
 import java.io.*;
 import java.util.HashMap;

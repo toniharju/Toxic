@@ -6,12 +6,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jsfml.graphics.BlendMode;
 import org.jsfml.graphics.Color;
+import org.jsfml.graphics.PrimitiveType;
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTexture;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 import org.jsfml.graphics.TextureCreationException;
+import org.jsfml.graphics.Vertex;
+import org.jsfml.graphics.VertexArray;
 import org.jsfml.system.Vector2f;
 
 /**
@@ -22,6 +25,7 @@ import org.jsfml.system.Vector2f;
 class Light {
 	
 	private Vector2f mOrigin;
+	private Vector2f mSize;
 	private Sprite mSprite = new Sprite();
 	
 	Light( Vector2f origin, Texture texture ) {
@@ -29,12 +33,19 @@ class Light {
 		mOrigin = origin;
 		mSprite.setPosition( origin );
 		mSprite.setTexture( texture );
+		mSize = Vector2f.componentwiseMul( new Vector2f( mSprite.getLocalBounds().width, mSprite.getLocalBounds().height ), mSprite.getScale() );
 		
 	}
 	
 	public Vector2f getOrigin() {
 		
 		return mOrigin;
+		
+	}
+	
+	public Vector2f getSize() {
+		
+		return mSize;
 		
 	}
 	
@@ -71,11 +82,11 @@ public class Lighting {
 	
 	private static synchronized void create() {
 		
-		if( mWasCreated ) return;
+		if( mWasCreated || Manager.getActiveGameMap() == null ) return;
 		
 		try {
 			
-			mStaticLayer.create( Base.getWindowSize().x, Base.getWindowSize().y );
+			mStaticLayer.create( Manager.getActiveGameMap().getMapSize().x, Manager.getActiveGameMap().getMapSize().y );
 			
 		} catch ( TextureCreationException ex ) {
 			
@@ -85,7 +96,7 @@ public class Lighting {
 		
 		Color dark = new Color( 0, 0, 0, 170 );
 		
-		mDarkLayer.setSize( new Vector2f( Base.getWindowSize() ) );
+		mDarkLayer.setSize( new Vector2f( Manager.getActiveGameMap().getMapSize() ) );
 		mDarkLayer.setFillColor( new Color( 85, 85, 85 ) );
 		
 		mStaticSprite.setTexture( mStaticLayer.getTexture() );
@@ -96,9 +107,7 @@ public class Lighting {
 	
 	public static synchronized void createStatic() {
 		
-		if( !mWasCreated || mStaticCreated ) return;
-		
-		if( mStaticLayer == null || !mLightingAllowed ) return;
+		if( !mWasCreated || mStaticCreated || mStaticLayer == null || !mLightingAllowed ) return;
 		
 		if( !mStaticLightList.isEmpty() ) {
 			
@@ -121,11 +130,31 @@ public class Lighting {
 				
 				mStaticLayer.draw( light.getSprite() );
 				
+				int x0 = ( int )( light.getOrigin().x + light.getSize().x / 2 ) / Manager.getActiveGameMap().getGridSize().x;
+				int y0 = ( int )( light.getOrigin().y + light.getSize().y / 2 ) / Manager.getActiveGameMap().getGridSize().y;
+				
+				int topLeftX = ( int )light.getOrigin().x / Manager.getActiveGameMap().getGridSize().x; int sizeX = ( int )light.getSize().x / Manager.getActiveGameMap().getGridSize().x;
+				int topLeftY = ( int )light.getOrigin().y / Manager.getActiveGameMap().getGridSize().x; int sizeY = ( int )light.getSize().y / Manager.getActiveGameMap().getGridSize().y;
+				
+				VertexArray quad = new VertexArray( PrimitiveType.QUADS );
+				
+				for( int y = topLeftY; y < topLeftY + sizeY; y++ ) {
+					
+					for( int x = topLeftX; x < topLeftX + sizeX; x++ ) {
+				
+						
+						
+					}
+				
+				}
+				
 			}
 			
 		}
 		
 		mStaticLayer.display();
+		
+		mStaticCreated = true;
 		
 	}
 	
@@ -137,17 +166,9 @@ public class Lighting {
 			
 		}
 		
-		if( !mStaticLightList.isEmpty() ) {
-			
-			for( Light light : mStaticLightList ) {
-				
-				light.getSprite().setPosition( Vector2f.sub( light.getOrigin(), mStaticSprite.getPosition() ) );
-				
-			}
-			
-		}
+		if( !mLightingAllowed ) return;
 		
-		mStaticSprite.setPosition( Vector2f.sub( Manager.getActiveScene().getView().getCenter(), Base.getWindowHalfSize() ) );
+		
 		
 	}
 	

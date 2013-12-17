@@ -291,6 +291,8 @@ public class Manager {
 				
 			}
 			
+			if( entity1.getVelocity().x != 0 && entity1.getVelocity().y != 0 ) entity1.setVelocity( Vector2f.mul( entity1.getVelocity(), 0.75f ) );
+			
 			entity1.move( entity1.getVelocity() );
 			
 			entity1.setVelocity( 0, 0 );
