@@ -1,6 +1,7 @@
 package Game;
 
 import Mimic.Base;
+import Mimic.Config;
 import Mimic.Entity;
 import Mimic.IMainEvents;
 import Mimic.Input;
@@ -52,9 +53,11 @@ class MainScene extends Scene implements IMainEvents {
 		Manager.setActiveGameMap( Resource.getGameMap( "res/maps/map1.map" ) );
 		Manager.getActiveGameMap().setImage( Resource.getImage( "res/maps/assets/map1.png" ) );
 		
+		Config.load( "config" );
+		
 		Inventory.initialize();
 		Inventory.set( Inventory.ItemType.Weapon, Inventory.Item.Pistol, 1 );
-		Inventory.set( Inventory.ItemType.Ammo, Inventory.Item.Pistol, 20 );
+		Inventory.set( Inventory.ItemType.Ammo, Inventory.Item.Pistol, Integer.valueOf( Config.get( "pistol_ammo" ) ) );
 		
 		mInventory.setTexture( Resource.getTexture( "res/images/inventory.png" ) );
 		mPistol.setTexture( Resource.getTexture( "res/images/pistol.png" ) );

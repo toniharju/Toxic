@@ -1,6 +1,7 @@
 package Game;
 
 import Mimic.Base;
+import Mimic.Config;
 import Mimic.Entity;
 import Mimic.ICollisionEvents;
 import Mimic.Input;
@@ -8,6 +9,7 @@ import Mimic.Inventory;
 import Mimic.Manager;
 import Mimic.Resource;
 import org.jsfml.audio.Sound;
+import org.jsfml.audio.SoundSource;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.system.Clock;
 import org.jsfml.system.Vector2f;
@@ -23,9 +25,11 @@ class Player extends Entity implements ICollisionEvents {
 	
 	private Sound mPistolShot = new Sound();
 	private Sound mPistolEmpty = new Sound();
+	private Sound mPistolReload = new Sound();
 	private Sound mFootstep = new Sound();
 	private Clock mFootstepClock = new Clock();
 	private boolean mIsMoving = false;
+	private boolean mIsReloading = false;
 	
 	Player() {
 		
@@ -35,6 +39,7 @@ class Player extends Entity implements ICollisionEvents {
 		
 		mPistolShot.setBuffer( Resource.getSound( "res/sounds/pistol_shot.wav" ) );
 		mPistolEmpty.setBuffer( Resource.getSound( "res/sounds/pistol_empty.wav" ) );
+		mPistolReload.setBuffer( Resource.getSound( "res/sounds/pistol_reload.wav" ) );
 		mFootstep.setBuffer( Resource.getSound( "res/sounds/footstep.wav" ) );
 		mFootstep.setVolume( 20 );
 		
@@ -54,6 +59,14 @@ class Player extends Entity implements ICollisionEvents {
 	@Override
 	public void onUpdate() {
 		
+		if( mIsReloading && mPistolReload.getStatus() == SoundSource.Status.STOPPED ) {
+				
+			mIsReloading = false;
+				
+			Inventory.set( Inventory.ItemType.Ammo, Inventory.Item.Pistol, Integer.valueOf( Config.get( "pistol_ammo" ) ) );
+			
+		}
+		
 		if( Base.isPaused() ) return;
 		
 		 mIsMoving = false;
@@ -63,7 +76,15 @@ class Player extends Entity implements ICollisionEvents {
 		if( Keyboard.isKeyPressed( Keyboard.Key.W ) ) { setVelocity( getVelocity().x, -200 * Base.getDeltaTime() ); mIsMoving = true; }
 		if( Keyboard.isKeyPressed( Keyboard.Key.S ) ) { setVelocity( getVelocity().x, 200 * Base.getDeltaTime() ); mIsMoving = true; }
 
-		if(  mIsMoving && mFootstepClock.getElapsedTime().asMilliseconds() > 500 ) {
+		if( Input.isKeyHit( Keyboard.Key.R ) && mPistolReload.getStatus() != SoundSource.Status.PLAYING ) {
+			
+			mPistolReload.play();
+			
+			mIsReloading = true;
+			
+		}
+		
+		if( mIsMoving && mFootstepClock.getElapsedTime().asMilliseconds() > 500 ) {
 			
 			mFootstep.play();
 			
