@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jsfml.audio.Music;
 import org.jsfml.audio.Sound;
+import org.jsfml.audio.SoundBuffer;
 import org.jsfml.graphics.Font;
 import org.jsfml.graphics.Image;
 import org.jsfml.graphics.Texture;
@@ -20,7 +21,7 @@ public class Resource {
 	
 	private static HashMap< String, Font > mFontList = new HashMap();
 	private static HashMap< String, Image > mImageList = new HashMap();
-	private static HashMap< String, Sound > mSoundList = new HashMap();
+	private static HashMap< String, SoundBuffer > mSoundList = new HashMap();
 	private static HashMap< String, Music > mMusicList = new HashMap();
 	private static HashMap< String, GameMap > mMapList = new HashMap();
 	private static HashMap< String, Texture > mTextureList = new HashMap();
@@ -140,6 +141,30 @@ public class Resource {
 		}
 		
 		return mMusicList.get( filename );
+		
+	}
+	
+	public static SoundBuffer getSound( String filename ) {
+		
+		if( !mSoundList.containsKey( filename ) ) {
+			
+			SoundBuffer temp = new SoundBuffer();
+			
+			try {
+				
+				temp.loadFromFile( Paths.get( filename ) );
+				System.out.println( "Opened Music: " + filename );
+				mSoundList.put( filename, temp );
+				
+			} catch ( IOException ex ) {
+				
+				Logger.getLogger(Resource.class.getName()).log(Level.SEVERE, null, ex);
+				
+			}
+			
+		}
+		
+		return mSoundList.get( filename );
 		
 	}
 	

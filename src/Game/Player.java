@@ -7,11 +7,11 @@ import Mimic.Input;
 import Mimic.Inventory;
 import Mimic.Manager;
 import Mimic.Resource;
+import org.jsfml.audio.Sound;
 import org.jsfml.graphics.IntRect;
-import org.jsfml.graphics.Sprite;
+import org.jsfml.system.Clock;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
-import org.jsfml.window.Keyboard.Key;
 import org.jsfml.window.Mouse;
 
 /**
@@ -21,11 +21,22 @@ import org.jsfml.window.Mouse;
  */
 class Player extends Entity implements ICollisionEvents {
 	
+	private Sound mPistolShot = new Sound();
+	private Sound mPistolEmpty = new Sound();
+	private Sound mFootstep = new Sound();
+	private Clock mFootstepClock = new Clock();
+	private boolean mIsMoving = false;
+	
 	Player() {
 		
 		super( "images/playerPistol.png" );
 		
 		setType( "PLAYER" );
+		
+		mPistolShot.setBuffer( Resource.getSound( "res/sounds/pistol_shot.wav" ) );
+		mPistolEmpty.setBuffer( Resource.getSound( "res/sounds/pistol_empty.wav" ) );
+		mFootstep.setBuffer( Resource.getSound( "res/sounds/footstep.wav" ) );
+		mFootstep.setVolume( 20 );
 		
 		addCollidableType( "NPC" );
 		addCollidableType( "ENEMY" );
@@ -36,6 +47,8 @@ class Player extends Entity implements ICollisionEvents {
 		
 		setPushable( true );
 		
+		mFootstepClock.restart();
+		
 	}
 	
 	@Override
@@ -43,16 +56,36 @@ class Player extends Entity implements ICollisionEvents {
 		
 		if( Base.isPaused() ) return;
 		
-		if( Keyboard.isKeyPressed( Keyboard.Key.A ) ) setVelocity( -200 * Base.getDeltaTime(), getVelocity().y );
-		if( Keyboard.isKeyPressed( Keyboard.Key.D ) ) setVelocity( 200 * Base.getDeltaTime(), getVelocity().y );
-		if( Keyboard.isKeyPressed( Keyboard.Key.W ) ) setVelocity( getVelocity().x, -200 * Base.getDeltaTime() );
-		if( Keyboard.isKeyPressed( Keyboard.Key.S ) ) setVelocity( getVelocity().x, 200 * Base.getDeltaTime() );
+		 mIsMoving = false;
+		
+		if( Keyboard.isKeyPressed( Keyboard.Key.A ) ) { setVelocity( -200 * Base.getDeltaTime(), getVelocity().y ); mIsMoving = true; }
+		if( Keyboard.isKeyPressed( Keyboard.Key.D ) ) { setVelocity( 200 * Base.getDeltaTime(), getVelocity().y ); mIsMoving = true; }
+		if( Keyboard.isKeyPressed( Keyboard.Key.W ) ) { setVelocity( getVelocity().x, -200 * Base.getDeltaTime() ); mIsMoving = true; }
+		if( Keyboard.isKeyPressed( Keyboard.Key.S ) ) { setVelocity( getVelocity().x, 200 * Base.getDeltaTime() ); mIsMoving = true; }
 
-		if( Input.isMouseHit( Mouse.Button.LEFT ) && Inventory.get( Inventory.ItemType.Ammo, Inventory.Item.Pistol ) > 0 ) {
+		if(  mIsMoving && mFootstepClock.getElapsedTime().asMilliseconds() > 500 ) {
 			
-			Manager.create( new PistolBullet( getPosition(), new Vector2f( 10, -100 ), getRotation() ) );
+			mFootstep.play();
 			
-			Inventory.set( Inventory.ItemType.Ammo, Inventory.Item.Pistol, Inventory.get( Inventory.ItemType.Ammo, Inventory.Item.Pistol ) - 1 );
+			mFootstepClock.restart();
+			
+		}
+		
+		if( Input.isMouseHit( Mouse.Button.LEFT ) ) {
+			
+			if( Inventory.get( Inventory.ItemType.Ammo, Inventory.Item.Pistol ) > 0 ) {
+			
+				Manager.create( new PistolBullet( getPosition(), new Vector2f( 10, -100 ), getRotation() ) );
+			
+				Inventory.set( Inventory.ItemType.Ammo, Inventory.Item.Pistol, Inventory.get( Inventory.ItemType.Ammo, Inventory.Item.Pistol ) - 1 );
+				
+				mPistolShot.play();
+				
+			} else {
+				
+				mPistolEmpty.play();
+				
+			}
 			
 		}
 		

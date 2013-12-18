@@ -36,6 +36,10 @@ class ResourceLoader implements Runnable {
 		Resource.getMusic( "res/sounds/dark_ambient.ogg" );
 		Resource.getMusic( "res/sounds/main_menu.ogg" );
 		
+		Resource.getSound( "res/sounds/pistol_shot.wav" );
+		Resource.getSound( "res/sounds/pistol_empty.wav" );
+		Resource.getSound( "res/sounds/footstep.wav" );
+		
 	}
 	
 }
