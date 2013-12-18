@@ -10,11 +10,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.FloatRect;
+import org.jsfml.graphics.Image;
 import org.jsfml.graphics.IntRect;
 import org.jsfml.graphics.PrimitiveType;
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
+import org.jsfml.graphics.TextureCreationException;
 import org.jsfml.graphics.Vertex;
 import org.jsfml.graphics.VertexArray;
 import org.jsfml.system.Vector2f;
@@ -36,11 +38,12 @@ public class GameMap {
 	private String mMapFilename;
 	
 	private Vector2i mMapSize = new Vector2i( Base.getWindowSize().x, Base.getWindowSize().y );
+	private Vector2i mMapChunks = new Vector2i( 0, 0 );
 	private Vector2i mMapGridSize = new Vector2i( mMapSize.x / mGridSize.x, mMapSize.y / mGridSize.y );
 	
 	private int[][] mCollisionLayer = new int[ mMapGridSize.x ][ mMapGridSize.y ];
 	
-	private Sprite mMapSprite = new Sprite();
+	private Sprite[][] mMapSprite;
 	private VertexArray mLineArray = new VertexArray( PrimitiveType.LINES );
 	private VertexArray mQuadArray = new VertexArray( PrimitiveType.QUADS );
 	
@@ -49,12 +52,10 @@ public class GameMap {
 		mMapFilename = filename;
 		
 		File f = new File( filename );
-		
-		
 			
-			f.createNewFile();
-			
-			BufferedReader fReader = new BufferedReader( new FileReader( f ) );
+		f.createNewFile();
+		
+		try ( BufferedReader fReader = new BufferedReader( new FileReader( f ) ) ) {
 			
 			String line = fReader.readLine();
 			
@@ -67,6 +68,21 @@ public class GameMap {
 						mMapSize = new Vector2i( Integer.parseInt( fReader.readLine() ), Integer.parseInt( fReader.readLine() ) );
 						mMapGridSize = new Vector2i( mMapSize.x / mGridSize.x, mMapSize.y / mGridSize.y );
 						mCollisionLayer = new int[ mMapGridSize.x ][ mMapGridSize.y ];
+						
+						mMapChunks = new Vector2i( mMapSize.x / 512, mMapSize.y / 512 );
+						
+						mMapSprite = new Sprite[ mMapChunks.x ][ mMapChunks.y ];
+						
+						for( int y = 0; y < mMapChunks.y; y++ ) {
+							
+							for( int x = 0; x < mMapChunks.x; x++ ) {
+								
+								mMapSprite[ x ][ y ] = new Sprite();
+								mMapSprite[ x ][ y ].setPosition( x * 512, y * 512 );
+								
+							}
+							
+						}
 						
 						break;
 						
@@ -97,8 +113,7 @@ public class GameMap {
 				line = fReader.readLine();
 				
 			}
-			
-			fReader.close();
+		}
 			
 		
 		
@@ -139,9 +154,32 @@ public class GameMap {
 		
 	}
 	
-	public void setTexture( Texture texture ) { 
+	public void setImage( Image img ) { 
 		
-		mMapSprite.setTexture( texture );
+		if( img != null ) {
+			
+			for( int y = 0; y < mMapChunks.y; y++ ) {
+				
+				for( int x = 0; x < mMapChunks.x; x++ ) {
+					
+					Texture temp = new Texture();
+					
+					try {
+						
+						temp.loadFromImage( img, new IntRect( 512 * x, 512 * y, 512, 512 ) );
+						mMapSprite[ x ][ y ].setTexture( temp );
+						
+					} catch ( TextureCreationException ex ) {
+						
+						Logger.getLogger( GameMap.class.getName() ).log( Level.SEVERE, null, ex );
+						
+					}
+					
+				}
+				
+			}
+			
+		}
 	
 	}
 	
@@ -153,7 +191,22 @@ public class GameMap {
 	
 	public void render() {
 		
-		if( mMapSprite.getTexture() != null ) Base.draw( mMapSprite );
+		IntRect camera = new IntRect( ( int )( Manager.getActiveScene().getView().getCenter().x - Base.getWindowHalfSize().x ) / 512,
+									  ( int )( Manager.getActiveScene().getView().getCenter().y - Base.getWindowHalfSize().y ) / 512, 
+									  ( int )( Manager.getActiveScene().getView().getCenter().x + Base.getWindowHalfSize().x ) / 512,
+									  ( int )( Manager.getActiveScene().getView().getCenter().y + Base.getWindowHalfSize().y ) / 512 );
+		
+		for( int y = camera.top; y <= camera.height; y++ ) {
+			
+			for( int x = camera.left; x <= camera.width; x++ ) {
+				
+				if( mMapSprite[ x ][ y ].getTexture() == null ) continue;
+				
+				Base.draw( mMapSprite[ x ][ y ] );
+				
+			}
+			
+		}
 		
 	}
 	
@@ -192,9 +245,7 @@ public class GameMap {
 			
 			File f = new File( mMapFilename );
 			
-			try {
-				
-				BufferedWriter fWriter = new BufferedWriter( new FileWriter( f ) );
+			try( BufferedWriter fWriter = new BufferedWriter( new FileWriter( f ) ) ) {
 				
 				fWriter.write( "header:" );						fWriter.newLine();
 				fWriter.write( String.valueOf( mMapSize.x ) );	fWriter.newLine();

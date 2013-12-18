@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.jsfml.audio.Music;
 import org.jsfml.audio.Sound;
 import org.jsfml.graphics.Font;
+import org.jsfml.graphics.Image;
 import org.jsfml.graphics.Texture;
 
 /**
@@ -18,6 +19,7 @@ import org.jsfml.graphics.Texture;
 public class Resource {
 	
 	private static HashMap< String, Font > mFontList = new HashMap();
+	private static HashMap< String, Image > mImageList = new HashMap();
 	private static HashMap< String, Sound > mSoundList = new HashMap();
 	private static HashMap< String, Music > mMusicList = new HashMap();
 	private static HashMap< String, GameMap > mMapList = new HashMap();
@@ -44,6 +46,30 @@ public class Resource {
 		}
 		
 		return mFontList.get( filename );
+		
+	}
+	
+	public static Image getImage( String filename ) {
+		
+		if( !mImageList.containsKey( filename ) ) {
+			
+			Image temp = new Image();
+			
+			try {
+				
+				temp.loadFromFile( Paths.get( filename ) );
+				System.out.println( "Loaded Image: " + filename );
+				mImageList.put( filename, temp );
+				
+			} catch ( IOException ex ) {
+				
+				Logger.getLogger( Resource.class.getName() ).log( Level.SEVERE, null, ex );
+				
+			}
+			
+		}
+		
+		return mImageList.get( filename );
 		
 	}
 	

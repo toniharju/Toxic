@@ -98,8 +98,6 @@ public abstract class Entity extends Sprite implements IMainEvents, ICollisionEv
 		float deltaAngle = toAngle - currentAngle;
 		if( deltaAngle < 0 ) deltaAngle = 360 + deltaAngle;
 		
-		System.out.println( toAngle + " : " + currentAngle );
-		
 		if( deltaAngle < 180 ) {
 			
 			rotate( -speed );
@@ -109,23 +107,6 @@ public abstract class Entity extends Sprite implements IMainEvents, ICollisionEv
 			rotate( speed );
 			
 		}
-		
-		/*float angle = ( float )Math.toDegrees( Math.atan2( delta.y, delta.x ) );
-		
-		angle = angle - ( float ) Math.toRadians( getRotation() + 90 );
-		
-		float absolute_angle = Math.abs( angle );
-		
-		if( absolute_angle > 3.13 && absolute_angle < 3.15 ) return;
-		
-		if( angle > Math.PI )
-			angle -= 2 * Math.PI;
-		else if( angle < -Math.PI )
-			angle += 2 * Math.PI;
-
-		rotate( angle > 0 ? -speed : speed );*/
-		
-		
 		
 	}
 	

@@ -6,15 +6,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jsfml.graphics.BlendMode;
 import org.jsfml.graphics.Color;
-import org.jsfml.graphics.PrimitiveType;
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTexture;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
 import org.jsfml.graphics.TextureCreationException;
-import org.jsfml.graphics.Vertex;
-import org.jsfml.graphics.VertexArray;
 import org.jsfml.system.Vector2f;
 
 /**
@@ -117,9 +114,13 @@ public class Lighting {
 				
 			}
 			
+		} else {
+			
+			return;
+			
 		}
 		
-		mStaticSprite.setPosition( Vector2f.sub( Manager.getActiveScene().getView().getCenter(), Base.getWindowHalfSize() ) );
+		//mStaticSprite.setPosition( Vector2f.sub( Manager.getActiveScene().getView().getCenter(), Base.getWindowHalfSize() ) );
 		
 		mStaticLayer.clear();
 		
@@ -130,24 +131,6 @@ public class Lighting {
 				
 				mStaticLayer.draw( light.getSprite() );
 				
-				int x0 = ( int )( light.getOrigin().x + light.getSize().x / 2 ) / Manager.getActiveGameMap().getGridSize().x;
-				int y0 = ( int )( light.getOrigin().y + light.getSize().y / 2 ) / Manager.getActiveGameMap().getGridSize().y;
-				
-				int topLeftX = ( int )light.getOrigin().x / Manager.getActiveGameMap().getGridSize().x; int sizeX = ( int )light.getSize().x / Manager.getActiveGameMap().getGridSize().x;
-				int topLeftY = ( int )light.getOrigin().y / Manager.getActiveGameMap().getGridSize().x; int sizeY = ( int )light.getSize().y / Manager.getActiveGameMap().getGridSize().y;
-				
-				VertexArray quad = new VertexArray( PrimitiveType.QUADS );
-				
-				for( int y = topLeftY; y < topLeftY + sizeY; y++ ) {
-					
-					for( int x = topLeftX; x < topLeftX + sizeX; x++ ) {
-				
-						
-						
-					}
-				
-				}
-				
 			}
 			
 		}
@@ -155,7 +138,7 @@ public class Lighting {
 		mStaticLayer.display();
 		
 		mStaticCreated = true;
-		
+
 	}
 	
 	public static synchronized void update() {
